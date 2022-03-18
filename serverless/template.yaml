@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    ecommerce-serverless
+
+    SAM Template for ecommerce-serverless
+
+Globals:
+    Function:
+        Timeout: 3
+
+Parameters:
+    Stage:
+        Type: String
+        Default: dev
+
+    MongoDbUsername:
+        Type: String
+
+    MongoDbPassword:
+        Type: String
+
+    MongoDbDb:
+        Type: String
+
+    MongoDbCollection:
+        Type: String
+
+Resources:
+    #Lambda Function
+    ProductsFunction:
+        Type: AWS::Serverless::Function
+        Properties:
+            CodeUri: products/
+            Handler: app.lambdaHandler
+            Runtime: nodejs14.x
+            Architectures:
+                - x86_64
+            Environment:
+                Variables:
+                    MONGODB_USERNAME: !Sub "${MongoDbUsername}"
+                    MONGODB_PASSWORD: !Sub "${MongoDbPassword}"
+                    MONGODB_DB: !Sub "${MongoDbDb}"
+                    MONGODB_COLLECTION: !Sub "${MongoDbCollection}"
+
+            Events:
+                Products:
+                    Type: Api
+                    Properties:
+                        Path: /products
+                        Method: GET
+                        RestApiId: !Ref ProductsApi
+
+    # API Gateway Configuration
+    ProductsApi:
+        Type: AWS::Serverless::Api
+        Properties:
+            Name: !Sub ${Stage}-Cognito-Platform-Api-Gateway
+            StageName: !Ref Stage
+
+Outputs:
+    ProductsApi:
+        Description: "API Gateway endpoint URL for stage (dev, prod, etc) for Products function"
+        Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/products/"
+    ProductsApiRestApi:
+        Description: "API Gateway ARN for Basic AWS API Gateway"
+        Value: !Ref ProductsApi
+    ProductsFunction:
+        Description: "Products Lambda Function ARN"
+        Value: !GetAtt ProductsFunction.Arn
+    ProductsFunctionIamRole:
+        Description: "Implicit IAM Role created for Products function"
+        Value: !GetAtt ProductsFunctionRole.Arn
