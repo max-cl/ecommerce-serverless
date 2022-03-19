@@ -2,6 +2,7 @@ import React, { SetStateAction } from "react";
 import type { NextPage } from "next";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 // Icons
 import { BsXLg, BsTrashFill } from "react-icons/bs";
@@ -27,6 +28,8 @@ const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
     const selectProducts = productsSlice.endpoints.getAll.select();
     const products = useSelector(selectProducts);
     const dispatch = useAppDispatch();
+    // Router
+    const router = useRouter();
 
     const handleRemoveItemFromCart = (idItem: string) => dispatch(removeItem(idItem));
 
@@ -97,7 +100,7 @@ const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
                             </p>
                         </div>
                         <div className="w-full my-4 flex justify-between items-center">
-                            <Button title="View Bag" handleOnclick={() => console.log("View Bag")} />
+                            <Button title="View Bag" handleOnclick={() => router.push("/cart")} />
                             <Button title="Checkout" handleOnclick={() => console.log("PAY")} />
                         </div>
                     </div>

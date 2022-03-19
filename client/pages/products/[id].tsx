@@ -89,10 +89,6 @@ const ProductDetail: NextPage = () => {
         });
     };
 
-    const handleAddToCart = () => {
-        dispatch(addItem(productBuyed));
-    };
-
     if (isError) return <div className="w-screen h-screen flex justify-center items-center">Something went wrong</div>;
     if (isLoading) return <div className="w-screen h-screen flex justify-center items-center">Loading...</div>;
     if (!product) return <div className="w-screen h-screen flex justify-center items-center">Missing product!</div>;
@@ -124,7 +120,7 @@ const ProductDetail: NextPage = () => {
                 }
                 handleOnchangeItemQuantity={handleOnchangeItemQuantity}
                 productBuyedQuantity={productBuyed.quantity}
-                handleAddToCart={handleAddToCart}
+                handleAddToCart={() => dispatch(addItem(productBuyed))}
                 productDescription={product.productDescription}
                 productDetails={product.productDetails}
                 productColor={product.productColor}

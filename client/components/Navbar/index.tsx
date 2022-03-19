@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 
 // Icons
-import { BsHandbag, BsPerson } from "react-icons/bs";
+import { BsBoxSeam, BsHandbag, BsPerson } from "react-icons/bs";
 import { GiTargetArrows } from "react-icons/gi";
 import { ImArrowLeft } from "react-icons/im";
 
@@ -14,9 +14,10 @@ import { selectCartQuantity } from "../../redux/selectors";
 
 // Components
 import ListItems from "./ListItems";
+
+// Context
+import { userContext } from "../../context";
 import { Button } from "../Common";
-import LoginForm from "../LoginForm";
-import SignUpForm from "../SignUpForm";
 
 interface IProps {
     isLogo?: boolean;
@@ -26,11 +27,12 @@ const NavBar: NextPage<IProps> = ({ isLogo = true }) => {
     // Store
     const selectCartProductSumQuantity = useSelector(selectCartQuantity);
     const cart = useAppSelector((state) => state.cart);
-
+    // Context
+    // Context
+    const { isSignedIn, signOut } = useContext(userContext);
     // Local States
     const [openListProducts, setOpenListProducts] = useState<boolean>(false);
-    const [openLoginForm, setOpenLoginForm] = useState<boolean>(false);
-    const [isSignUp, setIsSignUp] = useState<boolean>(false);
+    const [openProfile, setOpenProfile] = useState<boolean>(false);
 
     return (
         <header className="w-full h-14 z-50 bg-black text-white">
@@ -63,20 +65,43 @@ const NavBar: NextPage<IProps> = ({ isLogo = true }) => {
                     </Link>
                 </ul>
 
-                <div className="w-2/12 flex justify-between items-center pr-32">
-                    <span className="relative cursor-pointer">
-                        <BsPerson onClick={() => setOpenLoginForm((prev) => !prev)} className="text-xl" />
+                <div className="w-2/12 flex justify-center items-center pr-32">
+                    <span className="relative cursor-pointer mr-2">
+                        <BsPerson onClick={() => setOpenProfile((prev) => !prev)} className="text-xl" />
                     </span>
-                    {openLoginForm && (
+                    {openProfile && (
                         <div className="absolute w-96 h-72 overflow-auto p-8 bg-white text-black top-12 right-[50px] border-2 border-solid border-sky-400 z-40 flex justify-center items-center flex-col">
-                            <div className="w-full flex justify-evenly py-2">
-                                <Button title="Login" handleOnclick={() => setIsSignUp(false)} disabled={!isSignUp} />
-                                <Button title="SignUp" handleOnclick={() => setIsSignUp(true)} disabled={isSignUp} />
+                            {isSignedIn ? (
+                                <div className="w-full flex justify-center items-center py-2">
+                                    <Button title="Logout" handleOnclick={() => signOut()} />
+                                </div>
+                            ) : (
+                                <div className="w-full h-12 flex justify-start items-center flex-row">
+                                    <Link href="/login">
+                                        <a className="hover:text-sky-400 mr-2">Login</a>
+                                    </Link>
+                                    <div className="h-[20px] border-l-2 border-solid border-sky-400" />
+                                    <Link href="/signup">
+                                        <a className="hover:text-sky-400 ml-2">SignUp</a>
+                                    </Link>
+                                </div>
+                            )}
+                            <div className="w-full flex justify-evenly flex-col items-start">
+                                <Link href="">
+                                    <a className="w-full flex justify-start items-center hover:text-sky-400 my-2">
+                                        <BsPerson className="text-2xl mr-4" /> My Profile
+                                    </a>
+                                </Link>
+                                <Link href="">
+                                    <a className="w-full flex justify-start items-center hover:text-sky-400 my-2">
+                                        <BsBoxSeam className="text-2xl mr-4" />
+                                        My Orders
+                                    </a>
+                                </Link>
                             </div>
-                            {isSignUp ? <SignUpForm /> : <LoginForm />}
                         </div>
                     )}
-                    <span className="relative cursor-pointer">
+                    <span className="relative cursor-pointer ml-2">
                         {selectCartProductSumQuantity > 0 && (
                             <div className="absolute top-[-0.75rem] right-[-1rem] w-5 h-5 rounded-full bg-sky-400 opacity-80 text-xs flex justify-center items-center">
                                 {selectCartProductSumQuantity}

@@ -7,7 +7,8 @@ export const store = configureStore({
         cart: cartSlice,
         [productsSlice.reducerPath]: productsSlice.reducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productsSlice.middleware),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({ serializableCheck: false }).concat(productsSlice.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
