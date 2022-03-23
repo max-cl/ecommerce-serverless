@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
 // Components
+import { Spinner } from "../../components/Common";
 import NavBar from "../../components/Navbar";
 import ProductDetailContainer from "../../components/containers/ProductDetail";
 
@@ -15,6 +16,9 @@ import { productSizesData } from "./filterData";
 // Store
 import { useAppDispatch } from "../../hooks/redux";
 import { addItem } from "../../redux/states/cart";
+
+// Utils
+import { persistentDataInLocalStorage } from "../../utils/localstorage";
 
 interface IProductBuyed {
     _id: string;
@@ -89,8 +93,18 @@ const ProductDetail: NextPage = () => {
         });
     };
 
+    const handleAddToCart = () => {
+        dispatch(addItem(productBuyed));
+        // persistentDataInLocalStorage("cart", productBuyed);
+    };
+
     if (isError) return <div className="w-screen h-screen flex justify-center items-center">Something went wrong</div>;
-    if (isLoading) return <div className="w-screen h-screen flex justify-center items-center">Loading...</div>;
+    if (isLoading)
+        return (
+            <div className="w-screen h-screen flex justify-center items-center">
+                <Spinner />
+            </div>
+        );
     if (!product) return <div className="w-screen h-screen flex justify-center items-center">Missing product!</div>;
 
     return (
@@ -120,7 +134,7 @@ const ProductDetail: NextPage = () => {
                 }
                 handleOnchangeItemQuantity={handleOnchangeItemQuantity}
                 productBuyedQuantity={productBuyed.quantity}
-                handleAddToCart={() => dispatch(addItem(productBuyed))}
+                handleAddToCart={handleAddToCart}
                 productDescription={product.productDescription}
                 productDetails={product.productDetails}
                 productColor={product.productColor}

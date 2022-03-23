@@ -1,17 +1,21 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Auth } from "aws-amplify";
 import { useRouter } from "next/router";
 
-//@ts-ignore
-export default ({ options }) => {
+// Redux
+import { useAppDispatch } from "./redux";
+
+// Store
+import { login, logout, authenticatedUser } from "../redux/states/auth";
+
+// Types
+import { IAWSOptions } from "../types";
+
+export default ({ options }: IAWSOptions) => {
     // Router
     const router = useRouter();
-    // Local State
-    const [state, setState] = useState({
-        user: {},
-        isSignedIn: false,
-        error: "",
-    });
+    // Redux
+    const dispatch = useAppDispatch();
 
     const auth = useMemo(() => {
         Auth.configure(options);
@@ -21,73 +25,58 @@ export default ({ options }) => {
     useEffect(() => {
         auth.currentAuthenticatedUser()
             .then((user) => {
-                setState({ user, isSignedIn: true, error: "" });
+                const token = user.signInUserSession.idToken.jwtToken;
+                dispatch(authenticatedUser({ user, token, errorAuth: { status: 0, message: "" } }));
             })
             .catch((error) => {
-                setState({ ...state, error });
+                console.log({ error: `currentAuthenticatedUser: ${error}` });
             });
     }, []);
 
     const signIn = async (username: string, password: string) => {
         try {
             const user = await auth.signIn(username, password);
-            setState({ user, isSignedIn: true, error: "" });
-            console.log("signIn useAuth: ", { username, password, user });
+            const token = user.signInUserSession.idToken.jwtToken;
+            dispatch(login({ user, token, errorAuth: { status: 0, message: "" } }));
             router.push("/");
         } catch (error) {
-            console.log("error Login", { error });
-            //@ts-ignore
-            setState({ user: {}, isSignedIn: false, error: error.name as string });
+            console.log({ error: `signIn: ${error}` });
         }
     };
 
     const signOut = async () => {
         try {
-            await auth.signOut();
+            // await auth.signOut();
+            await auth.signOut({ global: true });
             console.log("signOut useAuth");
-            // Auth.signOut({ global: true });
-            setState({ user: {}, isSignedIn: false, error: "" });
+            dispatch(logout());
         } catch (error) {
-            console.log("error signing out: ", { error });
-            //@ts-ignore
-            setState({ user: {}, isSignedIn: false, error: error.name as string });
+            console.log({ error: `signOut: ${error}` });
         }
     };
 
     const confirmNewUser = async (username: string, confirmationCode: string) => {
         try {
             await auth.confirmSignUp(username, confirmationCode);
-            setState({ user: {}, isSignedIn: false, error: "" });
         } catch (error) {
-            console.log("error confirming sign up", { error });
-            //@ts-ignore
-            setState({ user: {}, isSignedIn: false, error: error.name as string });
+            console.log({ error: `confirmSignUp: ${error}` });
         }
     };
 
     const signUp = async (username: string, password: string, repeatedPassword: string) => {
         try {
             if (password === repeatedPassword) {
-                await auth.signUp({
-                    username,
-                    password,
-                });
-                setState({ user: {}, isSignedIn: false, error: "" });
-                console.log("signUp useAuth: ", { username, password });
+                await auth.signUp({ username, password });
                 router.push("/login");
             } else {
-                console.log("Password and Reapted Password are not equals");
-                setState({ ...state, error: "Password and Reapted Password are not equals" });
+                console.log({ error: `signUp: Password and Reapted Password are not equals` });
             }
         } catch (error) {
-            console.log("error confirming sign up", { error });
-            //@ts-ignore
-            setState({ user: {}, isSignedIn: false, error: error.name as string });
+            console.log({ error: `signUp: ${error}` });
         }
     };
 
     return {
-        ...state,
         signIn,
         signOut,
         confirmNewUser,

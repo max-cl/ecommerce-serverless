@@ -1,6 +1,9 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
+// Typres
+import { IMergerCartItems } from "../../types";
+
 // Select the amunt of Product there are in the Cart
 const selectCartQuantity = createSelector(
     (state: RootState) => state.cart,
@@ -11,8 +14,8 @@ const selectCartQuantity = createSelector(
 
 const mergeCartItems = createSelector(
     (state: RootState) => state.cart,
-    (cart) =>
-        cart.length > 0
+    (cart) => {
+        return cart.length > 0
             ? Object.values(
                   cart.reduce((acc, { _id, quantity, color, price }) => {
                       //@ts-ignore
@@ -27,9 +30,10 @@ const mergeCartItems = createSelector(
                           quantity: (acc[_id] ? acc[_id].quantity : 0) + quantity,
                       };
                       return acc;
-                  }, {})
+                  }, {} as IMergerCartItems)
               )
-            : []
+            : ([] as IMergerCartItems[]);
+    }
 );
 
 const totalCart = createSelector(mergeCartItems, (mergeItems) =>

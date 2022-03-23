@@ -1,3 +1,4 @@
 import cartSlice from "./cart";
+import authSlice from "./auth";
 
-export { cartSlice };
+export { cartSlice, authSlice };

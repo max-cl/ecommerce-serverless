@@ -1,20 +1,25 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useContext } from "react";
 
 // Components
 import { Button } from "../../components/Common";
 import NavBar from "../../components/Navbar";
 import SignUpForm from "../../components/SignUpForm";
 
-// Context
-import { userContext } from "../../context";
+// Custom Hooks
+import useAuth from "../../hooks/useAuth";
 
 const SignUp: NextPage = () => {
     // Router
     const router = useRouter();
-    // Context
-    const { signUp } = useContext(userContext);
+    // Custom Hooks useAuth (AWS Cognito)
+    const { signUp } = useAuth({
+        options: {
+            userPoolId: process.env.NEXT_PUBLIC_AWS_USER_POOL_ID,
+            userPoolWebClientId: process.env.NEXT_PUBLIC_AWS_USER_POOL_WEB_CLIENT_ID,
+            region: process.env.NEXT_PUBLIC_AWS_REGION,
+        },
+    });
 
     return (
         <section id="signup" className="h-screen">

@@ -12,7 +12,7 @@ interface IProps {
 
 const DotsCarousel: NextPage<IProps> = ({ setItemSelected, itemSelected, imagesLength }) => {
     return (
-        <div className="w-full px-96 absolute bottom-16 flex justify-between items-center">
+        <div className="w-full px-[30rem] absolute bottom-16 flex justify-between items-center">
             {[...Array(imagesLength)].map((img, index) => (
                 <React.Fragment key={index}>
                     {index === itemSelected ? (

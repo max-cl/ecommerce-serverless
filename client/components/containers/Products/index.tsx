@@ -5,6 +5,7 @@ import Link from "next/link";
 // Components
 import { Divider } from "../../Common";
 import Filters from "../../Filters";
+import FooterContainer from "../Footer";
 
 interface IProps {
     data: {
@@ -37,7 +38,7 @@ const ProductsContainer: NextPage<IProps> = ({
     brandSelected,
 }) => {
     return (
-        <section id="products" className="h-screen mt-14">
+        <section id="products" className="h-auto">
             {/* FIlters */}
             <div className="w-full px-64 h-32 bg-gray-50 flex justify-center items-center">
                 <div className="w-full flex justify-between items-center">
@@ -51,8 +52,8 @@ const ProductsContainer: NextPage<IProps> = ({
                 </div>
             </div>
             <Divider />
-            <div className="w-full h-full">
-                <div className="flex flex-wrap justify-center items-center gap-4">
+            <div className="w-full h-full mb-28">
+                <div className="flex flex-wrap justify-center items-center gap-y-20 gap-x-4">
                     {data.map((d, index) => (
                         <div
                             className="flex-grow-1 flex-shrink-0 basis-full h-[320px] sm:basis-[25%] lg:h-[400px]"
@@ -60,17 +61,24 @@ const ProductsContainer: NextPage<IProps> = ({
                         >
                             <Link href={`/products/${d._id}`}>
                                 <a>
-                                    <div className="h-full bg-gray-50 flex justify-center items-center flex-col relative">
+                                    <div className="w-full h-full">
                                         {d.productImages.length > 0 ? (
                                             <>
-                                                <Image
-                                                    src={`/assets/images/${d.productImages[0]}`}
-                                                    width={200}
-                                                    height={200}
-                                                />
-                                                <div className="text-xs my-2 px-1 absolute bottom-2 left-4">
-                                                    <p className="font-bold">{d.productName}</p>
-                                                    <p className="font-light">{`${d.productPrice} ETH`}</p>
+                                                <div className="h-full w-full bg-gray-50 grid place-content-center min-w-full">
+                                                    <Image
+                                                        src={`/assets/images/${d.productImages[0]}`}
+                                                        width={200}
+                                                        height={200}
+                                                    />
+                                                </div>
+                                                <div className="w-full text-xs my-2 px-1 bottom-2 left-4">
+                                                    <p>
+                                                        <span className="uppercase">
+                                                            {d.productBrand.title}&nbsp;&nbsp;
+                                                        </span>
+                                                        {d.productDescription.description}
+                                                    </p>
+                                                    <p className="font-bold mt-2">{`${d.productPrice} ETH`}</p>
                                                 </div>
                                             </>
                                         ) : (
@@ -83,6 +91,8 @@ const ProductsContainer: NextPage<IProps> = ({
                     ))}
                 </div>
             </div>
+
+            <FooterContainer />
         </section>
     );
 };

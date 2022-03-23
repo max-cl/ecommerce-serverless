@@ -1,11 +1,10 @@
 import type { NextPage } from "next";
 
 // Components
-import NavBar from "../components/Navbar";
-import HomeContainer from "../components/containers/Home";
-import ProductsPage from "../pages/products";
+import HeroContainer from "../components/containers/Hero";
 import HeadContainer from "../components/containers/Head";
 import FooterContainer from "../components/containers/Footer";
+import NavBar from "../components/Navbar";
 
 const Home: NextPage = () => {
     return (
@@ -13,14 +12,18 @@ const Home: NextPage = () => {
             {/* Head */}
             <HeadContainer />
 
-            {/* Navigation Bar */}
+            {/* NavBar */}
             <NavBar />
 
-            {/* Home Section */}
-            <HomeContainer />
+            <main>
+                {/* Hero Section */}
+                <HeroContainer />
 
-            {/* Products Section */}
-            <ProductsPage />
+                {/* Section X */}
+                <div className="h-[calc(100vh)] px-64 bg-white flex justify-center items-center">
+                    <h1>Section X</h1>
+                </div>
+            </main>
 
             {/* Footer */}
             <FooterContainer />

@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 
 // Components
-import { Divider } from "../../Common";
 import ProductDetailMainContainer from "./ProductDetailMainContainer";
 import ProductDetailRightContainer from "./ProductDetailRightContainer";
 

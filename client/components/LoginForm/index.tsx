@@ -13,7 +13,7 @@ interface IProps {
     signOut: () => Promise<void>;
 }
 
-const LoginForm: NextPage<IProps> = ({ user, isSignedIn, error, confirmNewUser, signIn, signOut }) => {
+const LoginForm: NextPage<IProps> = ({ user, isSignedIn, error, confirmNewUser, signIn }) => {
     // Local States
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -56,7 +56,6 @@ const LoginForm: NextPage<IProps> = ({ user, isSignedIn, error, confirmNewUser, 
                 <>
                     {/* @ts-ignore */}
                     <h1>Hi {user ? user.attributes.email : ""}</h1>
-                    {/* <Button title="Logout" handleOnclick={() => signOut()} /> */}
                 </>
             ) : (
                 <Form

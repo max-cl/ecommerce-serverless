@@ -3,6 +3,8 @@ import { useState } from "react";
 
 // Components
 import ProductsContainer from "../../components/containers/Products";
+import NavBar from "../../components/Navbar";
+import { Spinner } from "../../components/Common";
 
 // Hooks
 import { useGetAllQuery } from "../../services/products";
@@ -40,19 +42,27 @@ const Products: NextPage = () => {
 
     if (isError) return <div className="w-screen h-screen flex justify-center items-center">Something went wrong</div>;
 
-    if (isLoading) return <div className="w-screen h-screen flex justify-center items-center">Loading...</div>;
+    if (isLoading)
+        return (
+            <div className="w-screen h-screen flex justify-center items-center">
+                <Spinner />
+            </div>
+        );
 
     if (!data) return <div className="w-screen h-screen flex justify-center items-center">Missing products!</div>;
 
     return (
-        <ProductsContainer
-            data={data}
-            handleFilterGender={handleFilterGender}
-            handleFilterBrand={handleFilterBrand}
-            handleCleanFilters={handleCleanFilters}
-            genderSelected={genderSelected}
-            brandSelected={brandSelected}
-        />
+        <>
+            <NavBar />
+            <ProductsContainer
+                data={data}
+                handleFilterGender={handleFilterGender}
+                handleFilterBrand={handleFilterBrand}
+                handleCleanFilters={handleCleanFilters}
+                genderSelected={genderSelected}
+                brandSelected={brandSelected}
+            />
+        </>
     );
 };
 

@@ -3,9 +3,11 @@ import type { NextPage } from "next";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 // Icons
-import { BsXLg, BsTrashFill } from "react-icons/bs";
+import { BsXLg } from "react-icons/bs";
+import { ImBin } from "react-icons/im";
 
 // Components
 import { Button } from "../Common";
@@ -14,8 +16,13 @@ import FilterDivider from "../containers/ProductDetail/FilterDivider";
 // Store
 import { productsSlice } from "../../services/products";
 import { removeItem } from "../../redux/states/cart";
-import { useAppDispatch } from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { mergeCartItems, totalCart } from "../../redux/selectors";
+import { useCartCheckoutMutation } from "../../services/cart";
+
+// Types
+import { ICart, IMergerCartItems } from "../../types";
+import { clearErrorAuth } from "../../redux/states/auth";
 
 interface IProps {
     setOpenListProducts: (value: SetStateAction<boolean>) => void;
@@ -23,20 +30,45 @@ interface IProps {
 
 const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
     // Store
-    const selectMergeCartItems = useSelector(mergeCartItems);
+    const selectMergeCartItems: IMergerCartItems[] = useSelector(mergeCartItems);
     const selectTotalCart = useSelector(totalCart);
     const selectProducts = productsSlice.endpoints.getAll.select();
+    const cartItems = useAppSelector((state) => state.cart);
+    const { errorAuth } = useAppSelector((state) => state.auth);
     const products = useSelector(selectProducts);
     const dispatch = useAppDispatch();
     // Router
     const router = useRouter();
+    // Redux Toolkit Query
+    const [cartCheckout] = useCartCheckoutMutation();
 
     const handleRemoveItemFromCart = (idItem: string) => dispatch(removeItem(idItem));
 
+    const handleCartCheckout = async () => {
+        try {
+            const response: ICart = await cartCheckout(cartItems).unwrap();
+            console.log("ListItems handleCartCheckout Success: ", { response });
+        } catch (error) {
+            console.log(" ListItems handleCartCheckout Error: ", { error });
+        }
+    };
+
     return (
-        <div className="absolute w-96 h-96 overflow-auto p-4 py-4 bg-white text-black top-12 right-[50px] border-2 border-solid border-sky-400 z-40">
-            <div className="w-full p-4 flex justify-end">
-                <BsXLg className="cursor-pointer" onClick={() => setOpenListProducts(false)} />
+        <div
+            className={`absolute w-[36rem]  ${
+                selectMergeCartItems.length > 1 ? "h-[40rem]" : "h-[28rem]"
+            } h-[40rem] overflow-auto px-12 py-4 bg-white text-black top-12 right-32 border-2 border-solid border-sky-400 z-50`}
+        >
+            <div className="w-full h-16 relative p-2">
+                <div className="absolute right-0 h-12 w-12 p-4 bg-gray-50 rounded-full">
+                    <BsXLg
+                        className="cursor-pointer "
+                        onClick={() => {
+                            setOpenListProducts(false);
+                            dispatch(clearErrorAuth());
+                        }}
+                    />
+                </div>
             </div>
             <FilterDivider />
             {selectMergeCartItems.length === 0 ? (
@@ -45,14 +77,13 @@ const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
                 </div>
             ) : (
                 <>
-                    {selectMergeCartItems.map((item: any, index) => (
+                    {selectMergeCartItems.map((item, index) => (
                         <React.Fragment key={index}>
-                            <div className="w-full flex justify-between p-4">
+                            <div className="w-full flex justify-between p-8 min-w-full">
                                 <Image
                                     src={`/assets/images/${
                                         products.isSuccess &&
-                                        products.data.filter((product: { _id: any }) => product._id === item._id)[0]
-                                            .productImages[0]
+                                        products.data.filter((product) => product._id === item._id)[0].productImages[0]
                                     }`}
                                     width="100"
                                     height="100"
@@ -67,9 +98,8 @@ const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
                                         Item:
                                         <span className="text-xs font-bold uppercase">
                                             {products.isSuccess &&
-                                                products.data.filter(
-                                                    (product: { _id: any }) => product._id === item._id
-                                                )[0].productName}
+                                                products.data.filter((product) => product._id === item._id)[0]
+                                                    .productName}
                                             {` (${item.quantity})`}
                                         </span>
                                     </p>
@@ -83,8 +113,8 @@ const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
                                         Subtotal: <span className="text-xs font-bold">{item.subtotal} ETH</span>
                                     </p>
                                     <div className="grid place-content-end">
-                                        <BsTrashFill
-                                            className="cursor-pointer text-xl text-gray-800"
+                                        <ImBin
+                                            className="cursor-pointer text-xl text-gray-500 hover:text-red-500"
                                             onClick={() => handleRemoveItemFromCart(item._id)}
                                         />
                                     </div>
@@ -99,9 +129,25 @@ const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
                                 Total: <span className="mx-4 text-lg font-bold">{selectTotalCart} ETH</span>
                             </p>
                         </div>
+                        {errorAuth.status === 401 &&
+                            (errorAuth.message === "Unauthorized" ||
+                                errorAuth.message === "The incoming token has expired") && (
+                                <div className="w-full my-12 px-16 p-4 flex justify-between items-center bg-gray-100">
+                                    <h1 className="text-xs font-light text-red-500">
+                                        {errorAuth.message === "The incoming token has expired"
+                                            ? "Your session has expired. Please, signIn again."
+                                            : `You have to signIn, before to be able to checkout.`}
+                                    </h1>
+                                    <Link href="/login">
+                                        <a className="text-xs font-light text-sky-400 border-b border-solid border-sky-400">
+                                            Go to Login
+                                        </a>
+                                    </Link>
+                                </div>
+                            )}
                         <div className="w-full my-4 flex justify-between items-center">
                             <Button title="View Bag" handleOnclick={() => router.push("/cart")} />
-                            <Button title="Checkout" handleOnclick={() => console.log("PAY")} />
+                            <Button title="Checkout" handleOnclick={handleCartCheckout} />
                         </div>
                     </div>
                 </>

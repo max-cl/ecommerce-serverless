@@ -1,16 +1,12 @@
 import type { NextPage } from "next";
 import Image from "next/image";
 
-// Components
-import { Divider } from "../../Common";
-
 // Icons
 import { CgArrowLongRight } from "react-icons/cg";
 
-const HomeContainer: NextPage = () => {
+const HeroContainer: NextPage = () => {
     return (
-        <section className="h-screen bg-[#ECECEE] relative" id="home">
-            {/* <Divider /> */}
+        <section id="hero" className="h-[calc(100vh_-_3.5rem)] bg-[#ECECEE]">
             <div className="w-full h-full grid grid-cols-12">
                 <div className="w-full h-full col-start-1 col-end-6 pl-32 pr-40 pt-40">
                     <h1 className="text-4xl font-black uppercase tracking-wider">
@@ -27,7 +23,7 @@ const HomeContainer: NextPage = () => {
 
                 <div className="w-full h-full col-start-6 col-end-13 pl-24 pr-32 pt-40 grid grid-rows-6">
                     <div className="w-full h-full row-start-1 row-end-5">
-                        <Image src="/assets/images/hero2.png" width={560} height={240} />
+                        <Image src="/assets/images/hero.png" width={560} height={240} />
                     </div>
                     <div className="flex justify-end items-start row-start-5 row-end-7">
                         <div className="w-40 flex justify-between items-center text-xs">
@@ -40,4 +36,4 @@ const HomeContainer: NextPage = () => {
     );
 };
 
-export default HomeContainer;
+export default HeroContainer;

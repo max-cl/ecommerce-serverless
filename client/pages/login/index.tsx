@@ -1,20 +1,28 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useState, useContext } from "react";
 
 // Components
 import { Button } from "../../components/Common";
 import LoginForm from "../../components/LoginForm";
 import NavBar from "../../components/Navbar";
+import { useAppSelector } from "../../hooks/redux";
 
-// Context
-import { userContext } from "../../context";
+// Custom Hooks
+import useAuth from "../../hooks/useAuth";
 
 const Login: NextPage = () => {
     // Router
     const router = useRouter();
-    // Context
-    const { user, isSignedIn, error, signIn, signOut, confirmNewUser, signUp } = useContext(userContext);
+    // Custom Hooks useAuth (AWS Cognito)
+    const { signIn, signOut, confirmNewUser } = useAuth({
+        options: {
+            userPoolId: process.env.NEXT_PUBLIC_AWS_USER_POOL_ID,
+            userPoolWebClientId: process.env.NEXT_PUBLIC_AWS_USER_POOL_WEB_CLIENT_ID,
+            region: process.env.NEXT_PUBLIC_AWS_REGION,
+        },
+    });
+
+    const { user, isSignedIn, errorAuth } = useAppSelector((state) => state.auth);
 
     return (
         <section id="login" className="h-screen">
@@ -34,9 +42,9 @@ const Login: NextPage = () => {
                     signIn={signIn}
                     signOut={signOut}
                     confirmNewUser={confirmNewUser}
-                    error={error}
+                    error={errorAuth.message}
                     user={user}
-                    isSignedIn={isSignedIn}
+                    isSignedIn={isSignedIn !== undefined && isSignedIn}
                 />
             </div>
         </section>
