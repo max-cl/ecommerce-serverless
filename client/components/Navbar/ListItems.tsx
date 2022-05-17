@@ -33,25 +33,25 @@ const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
     const selectMergeCartItems: IMergerCartItems[] = useSelector(mergeCartItems);
     const selectTotalCart = useSelector(totalCart);
     const selectProducts = productsSlice.endpoints.getAll.select();
-    const cartItems = useAppSelector((state) => state.cart);
+    // const cartItems = useAppSelector((state) => state.cart);
     const { errorAuth } = useAppSelector((state) => state.auth);
     const products = useSelector(selectProducts);
     const dispatch = useAppDispatch();
     // Router
     const router = useRouter();
     // Redux Toolkit Query
-    const [cartCheckout] = useCartCheckoutMutation();
+    // const [cartCheckout] = useCartCheckoutMutation();
 
     const handleRemoveItemFromCart = (idItem: string) => dispatch(removeItem(idItem));
 
-    const handleCartCheckout = async () => {
-        try {
-            const response: ICart = await cartCheckout(cartItems).unwrap();
-            console.log("ListItems handleCartCheckout Success: ", { response });
-        } catch (error) {
-            console.log(" ListItems handleCartCheckout Error: ", { error });
-        }
-    };
+    // const handleCheckout = async () => {
+    //     try {
+    //         const response: ICart = await cartCheckout(cartItems).unwrap();
+    //         console.log("ListItems handleCheckout Success: ", { response });
+    //     } catch (error) {
+    //         console.log(" ListItems handleCheckout Error: ", { error });
+    //     }
+    // };
 
     return (
         <div
@@ -79,7 +79,7 @@ const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
                 <>
                     {selectMergeCartItems.map((item, index) => (
                         <React.Fragment key={index}>
-                            <div className="w-full flex justify-between p-8 min-w-full">
+                            <div className="w-48 h-48 flex justify-between p-8 min-w-full relative">
                                 <Image
                                     src={`/assets/images/${
                                         products.isSuccess &&
@@ -87,9 +87,10 @@ const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
                                     }`}
                                     width="100"
                                     height="100"
+                                    layout="fixed"
                                 />
 
-                                <div className="w-7/12 h-full">
+                                <div className="w-7/12 h-full relative">
                                     <p className="flex justify-between w-full font-thin text-xs uppercase mb-2">
                                         Sku:
                                         <span className="text-xs font-bold">{item._id}</span>
@@ -145,9 +146,9 @@ const ListItems: NextPage<IProps> = ({ setOpenListProducts }) => {
                                     </Link>
                                 </div>
                             )}
-                        <div className="w-full my-4 flex justify-between items-center">
-                            <Button title="View Bag" handleOnclick={() => router.push("/cart")} />
-                            <Button title="Checkout" handleOnclick={handleCartCheckout} />
+                        <div className="w-full my-4 flex justify-end items-center">
+                            <Button title="Checkout" handleOnclick={() => router.push("/cart")} />
+                            {/* <Button title="Checkout" handleOnclick={() => router.push("/order")} /> */}
                         </div>
                     </div>
                 </>

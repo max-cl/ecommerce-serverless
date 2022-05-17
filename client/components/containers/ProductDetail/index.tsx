@@ -46,11 +46,10 @@ const ProductDetailContainer: NextPage<IProps> = ({
     productBuyedSize,
 }) => {
     return (
-        <section id="products" className="w-full h-full relative">
-            {/* <Divider /> */}
+        <section className="h-[calc(100vh_-_3.5rem)] relative">
             <div className="w-full h-full grid grid-cols-12">
                 {/* Main Panel */}
-                <div className="w-full h-full col-start-1 col-end-10 grid grid-rows-6 ">
+                <div className="w-full h-full col-start-1 col-end-10 grid grid-rows-6">
                     <ProductDetailMainContainer
                         productImages={productImages}
                         productDescription={productDescription}

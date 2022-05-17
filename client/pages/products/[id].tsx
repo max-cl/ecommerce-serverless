@@ -17,9 +17,6 @@ import { productSizesData } from "./filterData";
 import { useAppDispatch } from "../../hooks/redux";
 import { addItem } from "../../redux/states/cart";
 
-// Utils
-import { persistentDataInLocalStorage } from "../../utils/localstorage";
-
 interface IProductBuyed {
     _id: string;
     quantity: number;

@@ -1,25 +1,29 @@
 import type { NextPage } from "next";
 import { useState } from "react";
-
+import { ActionCreatorWithoutPayload } from "@reduxjs/toolkit";
 // Components
 import { Button, Form, Input } from "../Common";
+
+// Types
+import { TError } from "../../types";
 
 interface IProps {
     user: {};
     isSignedIn: boolean;
-    error: string;
+    error: TError;
     confirmNewUser: (username: string, confirmationCode: string) => Promise<void>;
     signIn: (username: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
+    clearErrorAuth: ActionCreatorWithoutPayload<string>;
 }
 
-const LoginForm: NextPage<IProps> = ({ user, isSignedIn, error, confirmNewUser, signIn }) => {
+const LoginForm: NextPage<IProps> = ({ user, isSignedIn, error, confirmNewUser, signIn, clearErrorAuth }) => {
     // Local States
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmationCode, setConfirmationCode] = useState("");
 
-    if (error === "UserNotConfirmedException") {
+    if (error.status === 400 && error.message === "UserNotConfirmedException") {
         return (
             <Form
                 handleOnSubmit={(e) => {
@@ -27,6 +31,7 @@ const LoginForm: NextPage<IProps> = ({ user, isSignedIn, error, confirmNewUser, 
                     confirmNewUser(username, confirmationCode);
                     setConfirmationCode("");
                     setPassword("");
+                    clearErrorAuth();
                 }}
             >
                 <div className="w-full my-2">

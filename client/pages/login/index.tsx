@@ -5,14 +5,20 @@ import { useRouter } from "next/router";
 import { Button } from "../../components/Common";
 import LoginForm from "../../components/LoginForm";
 import NavBar from "../../components/Navbar";
-import { useAppSelector } from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 
 // Custom Hooks
 import useAuth from "../../hooks/useAuth";
 
+// Store
+import { clearErrorAuth } from "../../redux/states/auth";
+
 const Login: NextPage = () => {
     // Router
     const router = useRouter();
+    // Redux
+    const dispatch = useAppDispatch();
+
     // Custom Hooks useAuth (AWS Cognito)
     const { signIn, signOut, confirmNewUser } = useAuth({
         options: {
@@ -42,7 +48,8 @@ const Login: NextPage = () => {
                     signIn={signIn}
                     signOut={signOut}
                     confirmNewUser={confirmNewUser}
-                    error={errorAuth.message}
+                    error={errorAuth}
+                    clearErrorAuth={dispatch(clearErrorAuth)}
                     user={user}
                     isSignedIn={isSignedIn !== undefined && isSignedIn}
                 />

@@ -29,7 +29,7 @@ const ProductDetailMainContainer: NextPage<IProps> = ({ productImages, productDe
 
     return (
         <>
-            <div className="w-full flex justify-between items-center px-40 py-4 row-start-1 row-end-2">
+            <div className="flex justify-between items-center px-64 row-start-1 row-end-2">
                 {options.map((option, index) => (
                     <button
                         key={index}

@@ -18,7 +18,7 @@ const Carousel: NextPage<IProps> = ({ images, withDots = true }) => {
     const [itemSelected, setItemSelected] = useState<TItemSelected>(0);
 
     return (
-        <div className="h-full w-full pl-40 pr-16 pb-24 pt-12 flex justify-center items-center relative bg-gray-50 min-w-full">
+        <div className="h-full w-full pl-40 pr-16 pb-24 flex justify-center items-center relative min-w-full">
             {images.length > 0 ? (
                 <>
                     <ArrowsCarousel
@@ -28,7 +28,7 @@ const Carousel: NextPage<IProps> = ({ images, withDots = true }) => {
                     />
                     <ThumbnailsCarousel images={images} setItemSelected={setItemSelected} itemSelected={itemSelected} />
 
-                    <Image src={`/assets/images/${images[itemSelected]}`} width={480} height={480} />
+                    <Image src={`/assets/images/${images[itemSelected]}`} width={480} height={480} layout="fixed" />
 
                     {withDots && (
                         <DotsCarousel

@@ -7,10 +7,10 @@ import { NextRouter } from "next/router";
 // Components
 import { Button } from "../../Common";
 import FilterDivider from "../../containers/ProductDetail/FilterDivider";
+import { ServerErrors } from "../../Common/ServerErrors";
 
 // Icons
-import { BsHandbag } from "react-icons/bs";
-import { ImBin } from "react-icons/im";
+import { ImBin, ImArrowRight2 } from "react-icons/im";
 
 // Types
 import { IMergerCartItems, IProduct, TError } from "../../../types";
@@ -21,8 +21,9 @@ interface IProps {
     handleRemoveItemFromCart: (idItem: string) => { payload: string; type: string };
     selectTotalCart: number;
     errorAuth: TError;
-    handleCartCheckout: () => Promise<void>;
+    isSignedIn: boolean;
     router: NextRouter;
+    handleGoToLogin: () => void;
 }
 
 const CartContainer: NextPage<IProps> = ({
@@ -31,27 +32,58 @@ const CartContainer: NextPage<IProps> = ({
     handleRemoveItemFromCart,
     selectTotalCart,
     errorAuth,
-    handleCartCheckout,
+    isSignedIn,
     router,
+    handleGoToLogin,
 }) => {
     return (
         <section id="products" className="h-[calc(100vh_-_3.5rem)] px-64">
-            <div className="p-8 flex justify-start items-center">
-                <h1 className="text-4xl uppercase font-bold">Cart</h1>
-                <BsHandbag className="text-2xl" />
+            <div className="w-full h-16 flex justify-center items-end">
+                <Link href="/cart">
+                    <a className="z-50">
+                        <div className="w-64 h-12 bg-sky-400 rounded-r-full grid place-content-center">
+                            <p className="text-xs text-white font-bold uppercase">1. Cart Review</p>
+                        </div>
+                    </a>
+                </Link>
+                <Link href="/delivery">
+                    <a className="z-40">
+                        <div className="w-64 h-12 bg-gray-50 rounded-r-full grid place-content-center -ml-6 border border-solid border-sky-400">
+                            <p className="text-xs text-gray-800 font-thin uppercase">2. Delivery Address</p>
+                        </div>
+                    </a>
+                </Link>
+
+                <Link href="/payment">
+                    <a className="z-30">
+                        <div className="w-64 h-12 bg-gray-50 rounded-r-full grid place-content-center -ml-6 border border-solid border-sky-400">
+                            <p className="text-xs text-gray-800 font-thin uppercase">3. Payment</p>
+                        </div>
+                    </a>
+                </Link>
+            </div>
+
+            <div className="my-4 flex justify-start items-center">
+                <h1 className="text-xl uppercase font-bold">1. Cart Review</h1>
             </div>
             <div>
                 {selectMergeCartItems.map((item, index) => (
                     <React.Fragment key={index}>
                         <div className="w-full flex justify-between p-4 min-w-full">
-                            <Image
-                                src={`/assets/images/${
-                                    products.isSuccess &&
-                                    products.data.filter((product) => product._id === item._id)[0].productImages[0]
-                                }`}
-                                width="100"
-                                height="100"
-                            />
+                            <div className="w-5/12 grid place-content-center">
+                                <div className="w-40 h-40">
+                                    <Image
+                                        src={`/assets/images/${
+                                            products.isSuccess &&
+                                            products.data.filter((product) => product._id === item._id)[0]
+                                                .productImages[0]
+                                        }`}
+                                        width="100"
+                                        height="100"
+                                        layout="responsive"
+                                    />
+                                </div>
+                            </div>
 
                             <div className="w-7/12 h-full">
                                 <p className="flex justify-between w-full font-thin text-xs uppercase mb-2">
@@ -93,32 +125,16 @@ const CartContainer: NextPage<IProps> = ({
                         Total: <span className="mx-4 text-lg font-bold">{selectTotalCart} ETH</span>
                     </p>
                 </div>
-                {errorAuth.status === 401 &&
-                    (errorAuth.message === "Unauthorized" ||
-                        errorAuth.message === "The incoming token has expired") && (
-                        <div className="w-full my-12 px-16 p-4 flex justify-between items-center bg-gray-100">
-                            <h1 className="text-xs font-light text-red-500">
-                                {errorAuth.message === "The incoming token has expired"
-                                    ? "Your session has expired. Please, signIn again."
-                                    : `You have to signIn, before to be able to checkout.`}
-                            </h1>
-                            <Link href="/login">
-                                <a className="text-xs font-light text-sky-400 border-b border-solid border-sky-400">
-                                    Go to Login
-                                </a>
-                            </Link>
-                        </div>
-                    )}
-                <div className="w-full my-4 flex justify-between items-center">
-                    <Button title="Go to Products" handleOnclick={() => router.push("/products")} />
 
-                    {errorAuth.status === 401 &&
-                    (errorAuth.message === "Unauthorized" || errorAuth.message === "The incoming token has expired") ? (
-                        <></>
-                    ) : (
-                        <Button title="Checkout" handleOnclick={handleCartCheckout} />
-                    )}
-                </div>
+                <ServerErrors errorAuth={errorAuth} isSignedIn={isSignedIn} handleGoToLogin={handleGoToLogin} />
+
+                {isSignedIn && (
+                    <div className="w-full my-4 flex justify-end items-center">
+                        <Button title="Delivery" handleOnclick={() => router.push("/delivery")} withIcon={true}>
+                            <ImArrowRight2 className="text-sky-400 text-lg" />
+                        </Button>
+                    </div>
+                )}
             </div>
         </section>
     );

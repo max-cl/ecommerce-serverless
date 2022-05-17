@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../redux/store";
 
 // Types
-import { ICart } from "../types";
+// import { ICart } from "../types";
 
 export const catSlice = createApi({
     reducerPath: "cart",
@@ -13,16 +13,16 @@ export const catSlice = createApi({
             if (token && endpoint !== "refresh") {
                 headers.set("Authorization", `${token}`);
                 headers.set("Content-Type", "application/json");
-                headers.set("Access-Control-Allow-Origin", "no-cors");
+                // headers.set("Access-Control-Allow-Origin", "no-cors");
             }
             return headers;
         },
     }),
     tagTypes: ["Cart"],
     endpoints: (builder) => ({
-        cartCheckout: builder.mutation<any, ICart[]>({
+        cartCheckout: builder.mutation<any, any>({
             query: (body) => ({
-                url: "cart",
+                url: "order",
                 method: "POST",
                 body,
                 // crossDomain: true

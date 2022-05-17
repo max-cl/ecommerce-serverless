@@ -6,10 +6,13 @@ import { useRouter } from "next/router";
 import { useAppDispatch } from "./redux";
 
 // Store
-import { login, logout, authenticatedUser } from "../redux/states/auth";
+import { login, logout, authenticatedUser, saveErrorAuth, clearErrorAuth } from "../redux/states/auth";
 
 // Types
 import { IAWSOptions } from "../types";
+
+// Utils
+import { getItemFromLocalStorage, removeItemFromLocalStorage } from "../utils/localStorage";
 
 export default ({ options }: IAWSOptions) => {
     // Router
@@ -28,8 +31,9 @@ export default ({ options }: IAWSOptions) => {
                 const token = user.signInUserSession.idToken.jwtToken;
                 dispatch(authenticatedUser({ user, token, errorAuth: { status: 0, message: "" } }));
             })
-            .catch((error) => {
+            .catch((error: string) => {
                 console.log({ error: `currentAuthenticatedUser: ${error}` });
+                dispatch(saveErrorAuth({ status: 403, message: error }));
             });
     }, []);
 
@@ -38,9 +42,13 @@ export default ({ options }: IAWSOptions) => {
             const user = await auth.signIn(username, password);
             const token = user.signInUserSession.idToken.jwtToken;
             dispatch(login({ user, token, errorAuth: { status: 0, message: "" } }));
-            router.push("/");
+            const previuosPath = getItemFromLocalStorage("previousPath");
+            router.push(`${previuosPath ? previuosPath : "/"}`);
+            removeItemFromLocalStorage("previousPath");
         } catch (error) {
             console.log({ error: `signIn: ${error}` });
+            // @ts-ignore
+            dispatch(saveErrorAuth({ status: 400, message: error.name })); // 400 Bad Request
         }
     };
 
@@ -49,6 +57,7 @@ export default ({ options }: IAWSOptions) => {
             // await auth.signOut();
             await auth.signOut({ global: true });
             console.log("signOut useAuth");
+            dispatch(clearErrorAuth());
             dispatch(logout());
         } catch (error) {
             console.log({ error: `signOut: ${error}` });
@@ -67,6 +76,7 @@ export default ({ options }: IAWSOptions) => {
         try {
             if (password === repeatedPassword) {
                 await auth.signUp({ username, password });
+                dispatch(clearErrorAuth());
                 router.push("/login");
             } else {
                 console.log({ error: `signUp: Password and Reapted Password are not equals` });

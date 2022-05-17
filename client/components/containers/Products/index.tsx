@@ -64,7 +64,7 @@ const ProductsContainer: NextPage<IProps> = ({
                                     <div className="w-full h-full">
                                         {d.productImages.length > 0 ? (
                                             <>
-                                                <div className="h-full w-full bg-gray-50 grid place-content-center min-w-full">
+                                                <div className="w-full h-full bg-gray-50 grid place-content-center min-w-full">
                                                     <Image
                                                         src={`/assets/images/${d.productImages[0]}`}
                                                         width={200}

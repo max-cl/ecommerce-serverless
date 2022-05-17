@@ -1,3 +1,16 @@
+const setItemToLocalStorage = (keyLocalStorage: string, valueLocalStorage: string) => {
+    localStorage.setItem(keyLocalStorage, valueLocalStorage);
+};
+
+const getItemFromLocalStorage = (keyLocalStorage: string) => {
+    const item = localStorage.getItem(keyLocalStorage) ?? "";
+    return item;
+};
+
+const removeItemFromLocalStorage = (keyLocalStorage: string) => {
+    localStorage.removeItem(keyLocalStorage);
+};
+
 const persistentDataInLocalStorage = (keyLocalStorage: string, data: unknown) => {
     let array = [];
     // Parse the serialized data back into an array of objects
@@ -8,4 +21,4 @@ const persistentDataInLocalStorage = (keyLocalStorage: string, data: unknown) =>
     localStorage.setItem(keyLocalStorage, JSON.stringify(array));
 };
 
-export { persistentDataInLocalStorage };
+export { setItemToLocalStorage, getItemFromLocalStorage, removeItemFromLocalStorage, persistentDataInLocalStorage };
