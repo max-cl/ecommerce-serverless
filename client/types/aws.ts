@@ -1,4 +1,4 @@
-export interface IAWSOptions {
+export interface IAwsOptions {
     options: {
         userPoolId: string | undefined;
         userPoolWebClientId: string | undefined;

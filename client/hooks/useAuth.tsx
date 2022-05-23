@@ -9,12 +9,12 @@ import { useAppDispatch } from "./redux";
 import { login, logout, authenticatedUser, saveErrorAuth, clearErrorAuth } from "../redux/states/auth";
 
 // Types
-import { IAWSOptions } from "../types";
+import { IAwsOptions } from "../types";
 
 // Utils
 import { getItemFromLocalStorage, removeItemFromLocalStorage } from "../utils/localStorage";
 
-export default ({ options }: IAWSOptions) => {
+export default ({ options }: IAwsOptions) => {
     // Router
     const router = useRouter();
     // Redux

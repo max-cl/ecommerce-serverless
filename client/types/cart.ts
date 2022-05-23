@@ -6,7 +6,7 @@ interface ICart {
     price: number;
 }
 
-interface IMergerCartItems {
+interface IMergeCartItems {
     _id: string;
     color: string;
     price: number;
@@ -14,4 +14,4 @@ interface IMergerCartItems {
     quantity: number;
 }
 
-export type { ICart, IMergerCartItems };
+export type { ICart, IMergeCartItems };

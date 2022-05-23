@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import Link from "next/link";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
@@ -13,6 +12,7 @@ import { AiFillDollarCircle } from "react-icons/ai";
 
 // Store
 import { totalCart } from "../../redux/selectors";
+import CheckoutTimeLine from "../../components/CheckoutTimeLine";
 
 interface IProps {}
 
@@ -38,31 +38,9 @@ const Delivery: NextPage<IProps> = ({}) => {
         <>
             <NavBar />
             <section id="products" className="h-[calc(100vh_-_3.5rem)] px-64">
-                <div className="w-full h-16 flex justify-center items-end">
-                    <Link href="/cart">
-                        <a className="z-50">
-                            <div className="w-64 h-12 bg-gray-50 rounded-r-full grid place-content-center border border-solid border-sky-400">
-                                <p className="text-xs text-gray-800 font-thin uppercase">1. Cart Review</p>
-                            </div>
-                        </a>
-                    </Link>
-                    <Link href="/delivery">
-                        <a className=" z-40">
-                            <div className="w-64 h-12 bg-gray-50 rounded-r-full grid place-content-center -ml-6 border border-solid border-sky-400">
-                                <p className="text-xs text-gray-800 font-thin uppercase">2. Delivery Address</p>
-                            </div>
-                        </a>
-                    </Link>
-                    <Link href="/payment">
-                        <a className="z-30">
-                            <div className="w-64 h-12 bg-sky-400 rounded-r-full grid place-content-center -ml-6">
-                                <p className="text-xs text-white font-bold uppercase">3. Payment</p>
-                            </div>
-                        </a>
-                    </Link>
-                </div>
+                <CheckoutTimeLine />
+
                 <div className="my-4 flex justify-between items-center">
-                    <h1 className="text-xl uppercase font-bold">3. Payment</h1>
                     <div className="text-right">
                         <p className="font-thin text-lg uppercase">
                             Total: <span className="ml-2 text-xl font-bold">{selectTotalCart} ETH</span>

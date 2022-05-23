@@ -1,10 +1,10 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
-// Typres
-import { IMergerCartItems } from "../../types";
+// Types
+import { IMergeCartItems } from "../../types";
 
-// Select the amunt of Product there are in the Cart
+// Select the amount of Product there are in the Cart
 const selectCartQuantity = createSelector(
     (state: RootState) => state.cart,
     (cart) => {
@@ -30,9 +30,9 @@ const mergeCartItems = createSelector(
                           quantity: (acc[_id] ? acc[_id].quantity : 0) + quantity,
                       };
                       return acc;
-                  }, {} as IMergerCartItems)
+                  }, {} as IMergeCartItems)
               )
-            : ([] as IMergerCartItems[]);
+            : ([] as IMergeCartItems[]);
     }
 );
 

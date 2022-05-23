@@ -1,10 +1,13 @@
 import type { NextPage } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 // Icons
 import { CgArrowLongRight } from "react-icons/cg";
 
 const HeroContainer: NextPage = () => {
+    const router = useRouter();
+
     return (
         <section id="hero" className="h-[calc(100vh_-_3.5rem)] bg-[#ECECEE]">
             <div className="w-full h-full grid grid-cols-12">
@@ -16,8 +19,11 @@ const HeroContainer: NextPage = () => {
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut expedita error distinctio nemo.
                         Expedita eligendi enim placeat dolore debitis cumque.
                     </p>
-                    <button className="flex items-center justify-center py-4 px-12 uppercase text-xs rounded-sm text-blue-800 border-2 border-solid border-blue-800">
-                        Buy 115 $
+                    <button
+                        onClick={() => router.push("/products")}
+                        className="flex items-center justify-center py-4 px-12 uppercase text-xs rounded-sm text-blue-800 border-2 border-solid border-blue-800"
+                    >
+                        Our Products
                     </button>
                 </div>
 

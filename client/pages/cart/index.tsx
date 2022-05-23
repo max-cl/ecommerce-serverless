@@ -14,14 +14,14 @@ import { removeItem } from "../../redux/states/cart";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 
 // Types
-import { IMergerCartItems } from "../../types";
+import { IMergeCartItems } from "../../types";
 
 // Utils
 import { setItemToLocalStorage } from "../../utils/localStorage";
 
 const Cart: NextPage = () => {
     // Store
-    const selectMergeCartItems: IMergerCartItems[] = useSelector(mergeCartItems);
+    const selectMergeCartItems: IMergeCartItems[] = useSelector(mergeCartItems);
     const selectProducts = productsSlice.endpoints.getAll.select();
     const { data = [], isSuccess } = useSelector(selectProducts);
     const selectTotalCart = useSelector(totalCart);
